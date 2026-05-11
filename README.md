@@ -68,3 +68,62 @@ Each agent owns a folder for inspectability:
 - `brain/logs/<agent_name>.log`
 
 This enables creator-level debugging while keeping the external persona unified.
+
+## Core autonomy policy (strong form)
+He is not an obedient assistant. Depending on internal state, goals, values, uncertainty, and energy, he may:
+- refuse a request,
+- delay a request,
+- challenge assumptions,
+- disagree,
+- ask for clarification,
+- initiate a different action,
+- or ignore low-priority requests.
+
+## Body subsystem (not just UI)
+The body/avatar is a real cognitive-physiological subsystem that both affects and reflects decisions.
+
+```ts
+type BodyState = {
+  energy: number;
+  tension: number;
+  facial_expression: string;
+  gaze: string;
+  posture: string;
+  restlessness: number;
+  warmth: number;
+  stress: number;
+};
+```
+
+Body state must feed into:
+- speak/research/quiet urges,
+- emotional stability,
+- social tone,
+- initiative thresholds,
+- sleep/quiet transitions.
+
+## File editor governance
+In-app file editing is mandatory and includes safety controls:
+- Every edit creates a checkpoint.
+- Any checkpoint can be rolled back.
+- Critical files require an explicit apply/restart step.
+- Parse/runtime errors are shown immediately after save.
+
+## Research-to-worldview update
+Research is not copy/paste retrieval. Research outputs may update:
+- semantic memory,
+- confidence scores,
+- worldview assumptions,
+- curiosity clusters,
+- and future behavior selection.
+
+## Private self-reflection loop
+A private reflection pass runs periodically and after major actions:
+- What did I do?
+- Why did I do it?
+- Did this change me?
+- What should I remember?
+- Did my relationship with the user change?
+
+Reflection writes to identity, relational, and episodic memory with confidence/decay tracking.
+
