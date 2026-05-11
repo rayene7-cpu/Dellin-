@@ -1,0 +1,20 @@
+{
+  "name": "Dellin",
+  "mode": "awake",
+  "curiosity": 0.6,
+  "attachment": 0.4,
+  "uncertainty": 0.4,
+  "inhibition": 0.3,
+  "unresolved_goal_pressure": 0.3,
+  "body": {
+    "energy": 0.66430621259981,
+    "tension": 0.3,
+    "facial_expression": "calm",
+    "gaze": "steady",
+    "posture": "relaxed",
+    "restlessness": 0.2,
+    "warmth": 0.6,
+    "stress": 0.25661709191082355
+  },
+  "last_reflection": "What did I do? respond. Why? sufficient compliance and social readiness. Did this change me? Slightly. What should I remember? User preference + active context. Relationship change: stable."
+}
