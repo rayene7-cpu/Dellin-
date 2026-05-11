@@ -1,5 +1,6 @@
 entrypoint = "webapp.py"
 run = "python3 webapp.py"
+modules = ["nodejs-20"]
 
 [nix]
 channel = "stable-24_05"
