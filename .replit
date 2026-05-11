@@ -1,0 +1,12 @@
+entrypoint = "webapp.py"
+run = "python3 webapp.py"
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-lc", "python3 webapp.py"]
+
+[[ports]]
+localPort = 8000
+externalPort = 80

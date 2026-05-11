@@ -24,3 +24,16 @@ Web MVP includes:
 - unified chat panel,
 - live body/state panel,
 - autonomous reflection updates after each message.
+
+## Replit
+1. Create a new **Python Repl**.
+2. Upload this project files.
+3. Ensure `.replit` is present (already included).
+4. Click **Run**.
+5. Open the webview; it serves on port `8000` via `python3 webapp.py`.
+
+If Replit asks for a start command, use:
+```bash
+python3 webapp.py
+```
+
