@@ -1,0 +1,13 @@
+language = "nodejs"
+entrypoint = "app/page.tsx"
+run = "npm install && npm run dev"
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-lc", "npm ci || npm install && npm run build && npm run start"]
+
+[[ports]]
+localPort = 3000
+externalPort = 80
