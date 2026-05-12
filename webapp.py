@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from http.server import HTTPServer, BaseHTTPRequestHandler
-import json, random
+import json, os, random
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -90,4 +90,5 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == '__main__':
-    HTTPServer(('0.0.0.0', 8000), Handler).serve_forever()
+    port = int(os.environ.get('PORT', '8000'))
+    HTTPServer(('0.0.0.0', port), Handler).serve_forever()
