@@ -1,5 +1,6 @@
 entrypoint = "webapp.py"
 run = "python3 webapp.py"
+modules = ["nodejs-20"]
 
 [nix]
 channel = "stable-24_05"
@@ -10,3 +11,6 @@ run = ["sh", "-lc", "python3 webapp.py"]
 [[ports]]
 localPort = 8000
 externalPort = 80
+
+[agent]
+expertMode = true
