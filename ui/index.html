@@ -1,0 +1,55 @@
+<!doctype html>
+<html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Dellin Web MVP</title>
+<style>
+body{font-family:Arial;margin:0;background:#fffaf4;color:#222}
+.wrap{display:grid;grid-template-columns:2fr 1fr;gap:16px;padding:16px}
+.card{background:#fff;border:1px solid #ffd9e8;border-radius:14px;padding:14px;box-shadow:0 4px 18px rgba(255,184,214,.25)}
+h1{margin:0 0 8px;color:#c3418c}.accent{color:#d89a00}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.region{padding:10px;border-radius:10px;background:linear-gradient(135deg,#fff5a6,#ffd0ea);cursor:pointer}
+pre{white-space:pre-wrap}.chat{height:220px;overflow:auto;background:#fff7fb;border-radius:8px;padding:8px}
+input,button{padding:10px;border-radius:8px;border:1px solid #ddd} button{background:#ffd761}
+</style></head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>Dellin <span class="accent">Brain Map</span></h1>
+    <div id="regions" class="grid"></div>
+    <h3>Selected Region</h3>
+    <pre id="regionDetail">Tap a region</pre>
+  </div>
+  <div class="card">
+    <h3>Chat (Unified Male Identity)</h3>
+    <div id="chat" class="chat"></div>
+    <div style="display:flex;gap:6px;margin-top:8px"><input id="msg" style="flex:1" placeholder="say something"/><button onclick="sendMsg()">Send</button></div>
+    <h4>Body + State</h4>
+    <pre id="state"></pre>
+  </div>
+</div>
+<script>
+let brain={};
+async function refresh(){
+  brain = await (await fetch('/api/brain')).json();
+  const st = await (await fetch('/api/state')).json();
+  state.textContent = JSON.stringify(st,null,2);
+  regions.innerHTML='';
+  Object.entries(brain).forEach(([k,v])=>{
+    const d=document.createElement('div'); d.className='region'; d.textContent=`${k}\nactivity:${v}`;
+    d.onclick=()=>regionDetail.textContent=JSON.stringify({region:k,activity:v,body:st.body,last_reflection:st.last_reflection},null,2);
+    regions.appendChild(d);
+  });
+}
+async function sendMsg(){
+  const message=msg.value.trim(); if(!message) return;
+  chat.innerHTML += `<div><b>you:</b> ${message}</div>`;
+  const r = await fetch('/api/message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message})});
+  const data = await r.json();
+  chat.innerHTML += `<div><b>dellin:</b> ${data.reply}</div>`;
+  chat.scrollTop = chat.scrollHeight;
+  msg.value='';
+  refresh();
+}
+setInterval(refresh,3000); refresh();
+</script>
+</body></html>
