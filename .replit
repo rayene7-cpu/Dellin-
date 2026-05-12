@@ -1,3 +1,6 @@
+language = "nodejs"
+entrypoint = "app/page.tsx"
+run = "npm install && npm run dev"
 entrypoint = "webapp.py"
 run = "python3 webapp.py"
 modules = ["nodejs-20", "python-3.11"]
@@ -6,6 +9,10 @@ modules = ["nodejs-20", "python-3.11"]
 channel = "stable-24_05"
 
 [deployment]
+run = ["sh", "-lc", "npm ci || npm install && npm run build && npm run start"]
+
+[[ports]]
+localPort = 3000
 run = ["sh", "-lc", "python3 webapp.py"]
 
 [[ports]]
