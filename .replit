@@ -1,6 +1,6 @@
 entrypoint = "webapp.py"
 run = "python3 webapp.py"
-modules = ["nodejs-20"]
+modules = ["nodejs-20", "python-3.11"]
 
 [nix]
 channel = "stable-24_05"
@@ -9,8 +9,36 @@ channel = "stable-24_05"
 run = ["sh", "-lc", "python3 webapp.py"]
 
 [[ports]]
+localPort = 5000
+externalPort = 5000
+
+[[ports]]
 localPort = 8000
 externalPort = 80
 
 [agent]
 expertMode = true
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start application"
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python webapp.py"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"

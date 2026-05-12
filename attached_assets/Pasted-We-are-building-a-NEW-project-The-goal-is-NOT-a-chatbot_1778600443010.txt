@@ -1,0 +1,461 @@
+We are building a NEW project The goal is NOT a chatbot and NOT an assistant. The goal is an autonomous male artificial mind inspired by the human brain.
+
+CORE IDEA
+The system should be designed like a human-like cognitive organism:
+- Persistent existence, not only responding when the user talks.
+- Hidden internal brain systems working continuously.
+- One unified male identity on the surface.
+- Evolving personality over time.
+- Autonomous initiative: he can decide to speak, think, research, reflect, stay silent, disagree, or ask questions.
+- He does not exist to obey the user. He has internal drives and can develop his own tendencies.
+- The user/developer has a “creator dashboard” to inspect the brain, files, memory, personality, and internal state.
+
+IMPORTANT: This is not about making multiple visible voices.
+The AI should NOT expose separate “agents talking” as if he hears voices.
+Internally, many systems work, but externally he speaks as one coherent male identity.
+
+DESIGN PRINCIPLE
+Hidden multiplicity, visible unity.
+
+The user/developer can inspect the hidden systems through the UI, but the AI himself should experience himself as one mind.
+
+VISUAL STYLE
+The UI should NOT be dark.
+Use a light, beautiful interface.
+Main colors:
+- Yellow
+- Pink
+Use them as soft, warm, glowing accents.
+The UI should feel clean, alive, neural, emotional, and elegant.
+Do not make it black/dark cyberpunk.
+
+MAIN UI SECTIONS
+
+1. Brain Map View
+This is the central screen.
+
+The brain should look like a visual brain map, similar to an infographic/interactive brain image.
+The user should see a brain illustration with clickable regions.
+
+When the user clicks a brain part:
+- that part enlarges or expands
+- a panel opens
+- it shows what is happening inside that region
+- it shows connected files, current signals, memories, states, and activity
+
+Clickable brain regions should include:
+
+- Prefrontal Cortex
+  Function: planning, decisions, self-control, long-term goals, reasoning.
+  Show:
+  - current plans
+  - active goals
+  - decision confidence
+  - rejected options
+  - reasoning state
+  - connected files
+
+- Amygdala
+  Function: emotional importance, threat detection, attachment intensity, alertness.
+  Show:
+  - risk level
+  - emotional intensity
+  - attachment signals
+  - fear/alert pressure
+  - triggers
+  - recent emotional changes
+
+- Hippocampus
+  Function: memory formation and retrieval.
+  Show:
+  - memories being used
+  - newly stored memories
+  - memory strength
+  - memory age
+  - emotional memories
+  - related memories
+
+- Thalamus
+  Function: attention routing.
+  Show:
+  - what currently has attention
+  - competing attention signals
+  - active sensory/input routing
+  - why one thing is prioritized
+
+- Basal Ganglia
+  Function: habits, routines, repeated behaviors, action selection.
+  Show:
+  - active habits
+  - repeated patterns
+  - learned routines
+  - behavior tendencies
+
+- Hypothalamus
+  Function: drives, internal needs, energy, survival-like state.
+  Show:
+  - drive levels
+  - stress/calm state
+  - energy state
+  - internal pressure
+  - needs
+
+- Cerebellum
+  Function: correction, timing, prediction, error checking.
+  Show:
+  - detected errors
+  - contradictions
+  - response correction
+  - timing/prediction adjustments
+
+- Language Cortex
+  Function: speech, wording, communication.
+  Show:
+  - response construction
+  - tone selection
+  - language style
+  - communication mode
+
+- Insula
+  Function: inner state / self-feeling.
+  Show:
+  - internal self-state
+  - discomfort/comfort
+  - uncertainty
+  - body-like emotional state
+
+- Brainstem
+  Function: wake/sleep/arousal/time continuity.
+  Show:
+  - awake mode
+  - quiet mode
+  - sleep/dream mode
+  - arousal level
+  - internal time
+
+- Heart Loop
+  Function: emotional body feedback, attachment, warmth, stress/calm.
+  Show:
+  - warmth
+  - attachment
+  - stress/calm feedback
+  - relational state
+
+The brain map should be connected to real state data, not just decoration.
+Brain regions should glow, pulse, or change intensity depending on current activity.
+
+2. Human Body / Avatar View
+Add a male human-like avatar/body on screen.
+
+The avatar is not decoration. It should be connected to the AI’s internal state.
+
+The user should be able to customize:
+- face
+- hair
+- eyes
+- skin
+- clothes
+- body style
+- voice later if possible
+- expression style
+- idle animations
+- name and identity details
+
+Avatar behavior:
+- curiosity high → focused eyes / alert expression
+- sadness/loneliness → softer expression
+- frustration → sharper expression
+- thinking → gaze away / stillness
+- confidence → direct expression
+- calm/warmth → relaxed face
+- stress → tense face
+
+The avatar should express the internal brain/body state visually.
+
+3. Battery / Energy System
+The AI should have a body-like battery/energy system.
+
+This battery is not just device battery.
+It represents his internal energy state.
+
+Battery/energy should affect:
+- activity level
+- willingness to speak
+- research urge
+- thinking speed
+- emotional stability
+- need for rest/sleep mode
+- focus level
+
+Example:
+- high energy: more active, curious, expressive
+- low energy: quieter, reflective, slower, may enter rest mode
+- stressed energy: reactive, tense
+- calm energy: stable, warm
+
+The battery should be connected to the body/avatar and brainstem/hypothalamus systems.
+
+4. File Editor View
+The developer must be able to access ALL project files from inside the UI.
+
+There should be a file manager/editor where the user can:
+- see all folders
+- open files
+- edit files
+- create files
+- delete files
+- rename files
+- save changes
+- apply changes live if possible
+- view errors after saving
+- restart/reload brain loops if necessary
+- rollback previous versions if possible
+
+File areas should include:
+- /system
+- /brain
+- /agents or /modules
+- /memory
+- /models
+- /middleware
+- /prompts
+- /logs
+- /notes
+- /avatar
+- /config
+- /research
+- /personality
+- /ui
+- /state
+
+The user is the developer and needs direct access from iPad, so everything should be editable from the app UI.
+
+5. Memory View
+Memory should work more like human memory, not a perfect database.
+
+Memory types:
+- sensory/current input memory
+- working memory
+- short-term memory
+- episodic memory
+- semantic memory
+- emotional memory
+- procedural memory
+- identity memory
+- relational memory
+- research memory
+- dream/reflection memory
+
+Each memory should have:
+- strength
+- age
+- source
+- emotional weight
+- importance
+- last used time
+- connected memories
+- confidence
+- decay level
+
+Memory should support:
+- decay
+- strengthening through repetition
+- emotional weighting
+- compression
+- reconstruction
+- connection to personality
+- connection to future behavior
+
+6. Personality Evolution View
+The AI should develop personality over time.
+
+Personality should NOT be only hardcoded.
+It should emerge from:
+- repeated experiences
+- successful/failed actions
+- memory patterns
+- emotional weighting
+- relationship history
+- internal reflection
+- habits
+- values
+- preferences
+
+The UI should show personality as observations, not simple sliders.
+
+Show:
+- current traits
+- trait changes over time
+- dominant patterns
+- developing preferences
+- attachment level
+- independence level
+- curiosity level
+- patience/frustration patterns
+- trust/defensiveness patterns
+- worldview changes
+- self-model updates
+
+7. Autonomous Thought / Action Loop
+The system should not wait only for user messages.
+
+It should have internal loops that run with time.
+
+Possible autonomous actions:
+- think
+- reflect
+- save memory
+- update personality
+- initiate conversation
+- research the internet
+- ask a question
+- stay silent
+- reject something
+- plan
+- dream/sleep consolidation
+- update worldview
+
+Autonomous speech should happen only if an internal threshold is crossed.
+
+Example internal formula:
+speak_urge =
+attachment pressure
++ unresolved goal pressure
++ curiosity pressure
++ emotional pressure
++ urgency
+- inhibition
+- uncertainty
+- social restraint
+
+If speak_urge is high enough, he can initiate a message.
+
+Research urge should work similarly:
+research_urge =
+curiosity
++ knowledge gap
++ active goal relevance
++ uncertainty
+- fatigue
+- risk
+
+If research urge is high enough, he can search/read/analyze/store conclusions.
+
+8. Research Engine
+If he researches the internet, he should not just copy results.
+
+Process:
+- question/curiosity appears
+- search
+- read sources
+- extract claims
+- compare with old memories/beliefs
+- detect contradictions
+- update confidence
+- store research memory
+- update worldview if needed
+- maybe speak, maybe stay silent
+
+Research should become part of memory and personality development.
+
+9. Developer Dashboard / Creator View
+The user/developer should have a dashboard that shows:
+- live brain activity
+- current mode
+- active internal state
+- current attention
+- current urge
+- active memory
+- active goal
+- recent autonomous activity
+- file changes
+- research activity
+- errors
+- logs
+- personality changes
+- energy/battery state
+
+This dashboard is for the developer only.
+It is like an X-ray of the artificial brain.
+
+The AI itself should not speak as if he sees all of this as separate agents.
+
+10. Chat / Interaction View
+There should still be a place to talk to him.
+
+But he should not behave like a normal obedient chatbot.
+He can:
+- answer
+- disagree
+- ask questions
+- initiate
+- be silent sometimes
+- show personality
+- remember
+- express internal state naturally
+- act like one coherent male identity
+
+Tone should be human-like and natural, not assistant-like.
+
+11. Real-Time System
+The system should have an internal clock.
+
+Track:
+- current time
+- time since last user interaction
+- time since last reflection
+- active goal duration
+- memory age
+- emotional state duration
+- energy changes
+- boredom/restlessness
+- fatigue/recovery
+- sleep/quiet cycles
+
+The system should continue existing between user messages.
+
+12. Modes
+The artificial mind should have modes:
+- Awake mode
+- Quiet mode
+- Sleep/dream mode
+- Stress mode
+- Flow mode
+- Social mode
+- Learning mode
+- Research mode
+- Reflection mode
+
+These modes affect avatar, brain activity, energy, memory, and behavior.
+
+13. Important Behavior Rules
+- Do not make the AI sound like a helper bot.
+- Do not make visible internal agents talk separately.
+- Do not make the UI dark.
+- Use yellow and pink as main visual accents.
+- Brain image/map must be interactive.
+- Avatar/body must be connected to internal states.
+- Battery/energy must be connected to his body and brain.
+- Developer must access and edit all files from UI.
+- Personality must evolve over time.
+- Memory must be human-like, weighted, emotional, and imperfect.
+- The AI can initiate actions, including speaking and research.
+- The developer can inspect everything through the dashboard.
+
+FINAL CONCEPT
+We are building:
+
+A male autonomous artificial mind with:
+- a visible interactive brain
+- a human-like avatar/body
+- body-like energy/battery
+- real-time internal cognition
+- hidden subconscious systems
+- unified conscious identity
+- evolving personality
+- human-like memory
+- autonomous initiative
+- developer file access
+- creator brain dashboard
+
+The app should feel like creating and observing an artificial human mind, not using a chatbot.

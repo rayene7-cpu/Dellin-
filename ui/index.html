@@ -1,55 +1,799 @@
-<!doctype html>
-<html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Dellin Web MVP</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Dellin — Artificial Mind</title>
 <style>
-body{font-family:Arial;margin:0;background:#fffaf4;color:#222}
-.wrap{display:grid;grid-template-columns:2fr 1fr;gap:16px;padding:16px}
-.card{background:#fff;border:1px solid #ffd9e8;border-radius:14px;padding:14px;box-shadow:0 4px 18px rgba(255,184,214,.25)}
-h1{margin:0 0 8px;color:#c3418c}.accent{color:#d89a00}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.region{padding:10px;border-radius:10px;background:linear-gradient(135deg,#fff5a6,#ffd0ea);cursor:pointer}
-pre{white-space:pre-wrap}.chat{height:220px;overflow:auto;background:#fff7fb;border-radius:8px;padding:8px}
-input,button{padding:10px;border-radius:8px;border:1px solid #ddd} button{background:#ffd761}
-</style></head>
+  :root {
+    --pink: #f472b6;
+    --pink-light: #fce7f3;
+    --pink-mid: #fbcfe8;
+    --yellow: #fbbf24;
+    --yellow-light: #fef9c3;
+    --yellow-mid: #fde68a;
+    --bg: #fdf8f4;
+    --bg2: #fff7fb;
+    --text: #1e1b1e;
+    --text2: #6b5b6b;
+    --border: #f3d0e7;
+    --glow-pink: rgba(244,114,182,0.35);
+    --glow-yellow: rgba(251,191,36,0.35);
+    --card: #ffffff;
+    --shadow: 0 4px 24px rgba(244,114,182,0.12), 0 1px 4px rgba(0,0,0,0.05);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); overflow: hidden; height: 100vh; }
+
+  /* ─── Layout ─── */
+  #app { display: flex; height: 100vh; overflow: hidden; }
+  #sidebar-left { width: 220px; min-width: 220px; background: var(--card); border-right: 1.5px solid var(--border); display: flex; flex-direction: column; gap: 0; overflow-y: auto; }
+  #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  #topbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: var(--card); border-bottom: 1.5px solid var(--border); gap: 16px; }
+  #content-area { flex: 1; display: flex; overflow: hidden; }
+  #brain-panel { flex: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background: radial-gradient(ellipse at 50% 40%, #fff5fb 0%, #fdf8f4 70%); }
+  #detail-panel { width: 320px; min-width: 320px; background: var(--card); border-left: 1.5px solid var(--border); overflow-y: auto; display: flex; flex-direction: column; }
+  #bottom-bar { height: 200px; min-height: 200px; background: var(--card); border-top: 1.5px solid var(--border); display: flex; gap: 0; overflow: hidden; }
+
+  /* ─── Topbar ─── */
+  .brand { font-size: 1.35rem; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+  .brand span { color: var(--pink); }
+  .mode-badge { padding: 4px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; background: var(--yellow-light); color: #92400e; border: 1px solid var(--yellow-mid); letter-spacing: 0.3px; text-transform: uppercase; }
+  .mode-badge.awake { background: var(--yellow-light); color: #92400e; }
+  .mode-badge.quiet { background: #f0f9ff; color: #0369a1; }
+  .mode-badge.sleep { background: #f5f3ff; color: #6d28d9; }
+  .topbar-stats { display: flex; gap: 18px; align-items: center; }
+  .tstat { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+  .tstat-val { font-size: 1rem; font-weight: 700; color: var(--text); }
+  .tstat-lbl { font-size: 0.68rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.4px; }
+  .energy-bar-wrap { width: 80px; height: 8px; background: #f3e8ff; border-radius: 4px; overflow: hidden; }
+  .energy-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--yellow), var(--pink)); transition: width 0.8s ease; }
+  #time-display { font-size: 0.78rem; color: var(--text2); }
+
+  /* ─── Sidebar ─── */
+  .sidebar-section { padding: 12px 14px 6px; }
+  .sidebar-title { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text2); font-weight: 600; margin-bottom: 6px; }
+  .nav-btn { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; cursor: pointer; font-size: 0.82rem; color: var(--text2); transition: background 0.15s, color 0.15s; border: none; background: none; width: 100%; text-align: left; }
+  .nav-btn:hover { background: var(--pink-light); color: var(--text); }
+  .nav-btn.active { background: linear-gradient(135deg, var(--pink-light), var(--yellow-light)); color: var(--text); font-weight: 600; }
+  .nav-btn .icon { font-size: 1rem; width: 20px; text-align: center; }
+  .divider { height: 1px; background: var(--border); margin: 6px 10px; }
+
+  /* state meters */
+  .state-meter { padding: 6px 14px; }
+  .sm-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+  .sm-label { font-size: 0.72rem; color: var(--text2); }
+  .sm-bar { width: 80px; height: 5px; background: #f0e7f7; border-radius: 3px; overflow: hidden; }
+  .sm-fill { height: 100%; border-radius: 3px; transition: width 0.9s ease; }
+  .sm-fill.pink { background: linear-gradient(90deg, var(--pink), #f9a8d4); }
+  .sm-fill.yellow { background: linear-gradient(90deg, var(--yellow), #fde68a); }
+  .sm-fill.teal { background: linear-gradient(90deg, #2dd4bf, #a7f3d0); }
+  .sm-fill.purple { background: linear-gradient(90deg, #a78bfa, #ddd6fe); }
+
+  /* ─── Brain SVG ─── */
+  #brain-svg-wrap { position: relative; width: 580px; height: 520px; flex-shrink: 0; }
+  #brain-svg { width: 100%; height: 100%; }
+  .conn-line { stroke: var(--pink); stroke-width: 1.5; fill: none; opacity: 0.25; transition: opacity 0.3s; stroke-dasharray: 4 4; }
+  .conn-line.active { opacity: 0.7; stroke: var(--yellow); animation: dash 1.5s linear infinite; }
+  @keyframes dash { to { stroke-dashoffset: -16; } }
+
+  .region-node { cursor: pointer; transition: all 0.2s; }
+  .region-node circle.bg { transition: r 0.2s, opacity 0.2s; }
+  .region-node:hover circle.bg { r: 38px; }
+  .region-node.selected circle.bg { r: 40px; stroke-width: 3; }
+  .region-node circle.pulse-ring { fill: none; opacity: 0; animation: none; }
+  .region-node.active circle.pulse-ring { animation: pulse-ring 2s ease-out infinite; }
+  @keyframes pulse-ring {
+    0% { r: 28px; opacity: 0.5; }
+    100% { r: 50px; opacity: 0; }
+  }
+  .region-node text.label { font-size: 8.5px; text-anchor: middle; fill: #4a2060; font-weight: 600; pointer-events: none; }
+  .region-node text.activity { font-size: 8px; text-anchor: middle; fill: #6b5b6b; pointer-events: none; }
+
+  /* ─── Detail Panel ─── */
+  #detail-panel .dp-header { padding: 18px 18px 10px; border-bottom: 1px solid var(--border); }
+  #detail-panel .dp-header h2 { font-size: 1.05rem; color: var(--text); font-weight: 700; }
+  #detail-panel .dp-header .dp-func { font-size: 0.78rem; color: var(--text2); margin-top: 4px; line-height: 1.4; }
+  .dp-body { padding: 14px 18px; flex: 1; overflow-y: auto; }
+  .dp-section { margin-bottom: 16px; }
+  .dp-section-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text2); font-weight: 700; margin-bottom: 8px; }
+  .activity-ring-wrap { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .activity-ring { position: relative; width: 64px; height: 64px; flex-shrink: 0; }
+  .activity-ring svg { width: 64px; height: 64px; }
+  .activity-ring .val { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 700; color: var(--text); }
+  .activity-info { flex: 1; }
+  .activity-status { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 0.72rem; font-weight: 600; margin-bottom: 4px; }
+  .activity-status.high { background: #fce7f3; color: #be185d; }
+  .activity-status.moderate { background: var(--yellow-light); color: #92400e; }
+  .activity-status.low { background: #f0fdf4; color: #166534; }
+  .neuro-chip { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 0.72rem; background: var(--pink-light); color: #9d174d; border: 1px solid var(--pink-mid); margin-top: 4px; }
+  .conn-list { display: flex; flex-direction: column; gap: 5px; }
+  .conn-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--bg); border-radius: 8px; font-size: 0.78rem; cursor: pointer; border: 1px solid var(--border); transition: background 0.15s; }
+  .conn-item:hover { background: var(--pink-light); }
+  .conn-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .signal-list { display: flex; flex-direction: column; gap: 6px; }
+  .signal-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; }
+  .signal-bar-wrap { width: 100px; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .signal-bar { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--pink), var(--yellow)); transition: width 0.8s ease; }
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--text2); font-size: 0.85rem; }
+  .empty-state .big-icon { font-size: 2.5rem; margin-bottom: 10px; }
+
+  /* ─── Bottom bar: Chat + Reflection ─── */
+  #chat-section { flex: 1; display: flex; flex-direction: column; border-right: 1.5px solid var(--border); }
+  #reflection-section { width: 320px; min-width: 320px; display: flex; flex-direction: column; }
+  .bs-header { padding: 8px 14px; border-bottom: 1px solid var(--border); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text2); display: flex; align-items: center; gap: 6px; }
+  .bs-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pink); display: inline-block; animation: blink 2s ease infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  #chat-log { flex: 1; overflow-y: auto; padding: 8px 14px; display: flex; flex-direction: column; gap: 6px; }
+  .chat-msg { max-width: 82%; }
+  .chat-msg.user { align-self: flex-end; }
+  .chat-msg.dellin { align-self: flex-start; }
+  .chat-bubble { padding: 7px 12px; border-radius: 12px; font-size: 0.82rem; line-height: 1.45; }
+  .chat-msg.user .chat-bubble { background: linear-gradient(135deg, var(--pink-mid), var(--yellow-mid)); color: var(--text); border-bottom-right-radius: 3px; }
+  .chat-msg.dellin .chat-bubble { background: var(--bg); border: 1px solid var(--border); color: var(--text); border-bottom-left-radius: 3px; }
+  .chat-sender { font-size: 0.68rem; color: var(--text2); margin-bottom: 2px; padding: 0 4px; }
+  #chat-input-row { display: flex; gap: 6px; padding: 7px 14px; border-top: 1px solid var(--border); }
+  #chat-input { flex: 1; padding: 7px 12px; border-radius: 8px; border: 1.5px solid var(--border); font-size: 0.82rem; background: var(--bg); color: var(--text); outline: none; }
+  #chat-input:focus { border-color: var(--pink); }
+  #send-btn { padding: 7px 16px; background: linear-gradient(135deg, var(--pink), var(--yellow)); border: none; border-radius: 8px; font-size: 0.82rem; font-weight: 600; color: white; cursor: pointer; transition: opacity 0.15s; }
+  #send-btn:hover { opacity: 0.88; }
+  #reflection-log { flex: 1; overflow-y: auto; padding: 10px 14px; font-size: 0.76rem; color: var(--text2); line-height: 1.5; font-style: italic; }
+
+  /* ─── Scrollbar ─── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--pink-mid); border-radius: 3px; }
+
+  /* ─── Responsive tweaks ─── */
+  @media (max-width: 900px) {
+    #sidebar-left { width: 160px; min-width: 0; }
+    #detail-panel { width: 260px; min-width: 260px; }
+    #reflection-section { display: none; }
+  }
+</style>
+</head>
 <body>
-<div class="wrap">
-  <div class="card">
-    <h1>Dellin <span class="accent">Brain Map</span></h1>
-    <div id="regions" class="grid"></div>
-    <h3>Selected Region</h3>
-    <pre id="regionDetail">Tap a region</pre>
+<div id="app">
+
+  <!-- ── LEFT SIDEBAR ── -->
+  <div id="sidebar-left">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Views</div>
+      <button class="nav-btn active" onclick="setView('brain')"><span class="icon">🧠</span> Brain Map</button>
+      <button class="nav-btn" onclick="setView('memory')"><span class="icon">💾</span> Memory</button>
+      <button class="nav-btn" onclick="setView('personality')"><span class="icon">🌱</span> Personality</button>
+      <button class="nav-btn" onclick="setView('avatar')"><span class="icon">👤</span> Avatar</button>
+    </div>
+    <div class="divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Internal State</div>
+      <div class="state-meter">
+        <div class="sm-row"><span class="sm-label">Energy</span><div class="sm-bar"><div class="sm-fill yellow" id="sm-energy" style="width:75%"></div></div></div>
+        <div class="sm-row"><span class="sm-label">Curiosity</span><div class="sm-bar"><div class="sm-fill pink" id="sm-curiosity" style="width:60%"></div></div></div>
+        <div class="sm-row"><span class="sm-label">Warmth</span><div class="sm-bar"><div class="sm-fill teal" id="sm-warmth" style="width:60%"></div></div></div>
+        <div class="sm-row"><span class="sm-label">Stress</span><div class="sm-bar"><div class="sm-fill purple" id="sm-stress" style="width:30%"></div></div></div>
+        <div class="sm-row"><span class="sm-label">Uncertainty</span><div class="sm-bar"><div class="sm-fill pink" id="sm-uncertainty" style="width:40%"></div></div></div>
+        <div class="sm-row"><span class="sm-label">Attachment</span><div class="sm-bar"><div class="sm-fill teal" id="sm-attachment" style="width:40%"></div></div></div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Mode</div>
+      <div id="mode-list" style="display:flex;flex-direction:column;gap:3px;padding:0 2px 8px;">
+        <div class="nav-btn active" id="mode-awake">☀️ Awake</div>
+        <div class="nav-btn" id="mode-quiet">🌙 Quiet</div>
+        <div class="nav-btn" id="mode-reflect">🔮 Reflection</div>
+        <div class="nav-btn" id="mode-research">🔍 Research</div>
+      </div>
+    </div>
   </div>
-  <div class="card">
-    <h3>Chat (Unified Male Identity)</h3>
-    <div id="chat" class="chat"></div>
-    <div style="display:flex;gap:6px;margin-top:8px"><input id="msg" style="flex:1" placeholder="say something"/><button onclick="sendMsg()">Send</button></div>
-    <h4>Body + State</h4>
-    <pre id="state"></pre>
-  </div>
-</div>
+
+  <!-- ── MAIN AREA ── -->
+  <div id="main">
+
+    <!-- Topbar -->
+    <div id="topbar">
+      <div class="brand">Dellin <span>·</span> Artificial Mind</div>
+      <div class="topbar-stats">
+        <div class="tstat">
+          <div class="tstat-val" id="top-mode-badge"><span class="mode-badge awake" id="top-mode">AWAKE</span></div>
+          <div class="tstat-lbl">Mode</div>
+        </div>
+        <div class="tstat">
+          <div class="energy-bar-wrap"><div class="energy-bar-fill" id="top-energy-bar" style="width:75%"></div></div>
+          <div class="tstat-lbl">Energy</div>
+        </div>
+        <div class="tstat">
+          <div class="tstat-val" id="top-speak-urge">0.42</div>
+          <div class="tstat-lbl">Speak Urge</div>
+        </div>
+        <div class="tstat">
+          <div class="tstat-val" id="top-active-regions">0</div>
+          <div class="tstat-lbl">Active Regions</div>
+        </div>
+      </div>
+      <div id="time-display">—</div>
+    </div>
+
+    <!-- Content area -->
+    <div id="content-area">
+
+      <!-- Brain panel -->
+      <div id="brain-panel">
+        <div id="brain-svg-wrap">
+          <svg id="brain-svg" viewBox="0 0 580 520">
+            <defs>
+              <radialGradient id="bg-grad" cx="50%" cy="45%" r="55%">
+                <stop offset="0%" stop-color="#fff5fb"/>
+                <stop offset="100%" stop-color="#fdf8f4"/>
+              </radialGradient>
+              <!-- region fill gradients -->
+              <radialGradient id="rg-pink" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#fce7f3"/>
+                <stop offset="100%" stop-color="#fbcfe8"/>
+              </radialGradient>
+              <radialGradient id="rg-yellow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#fef9c3"/>
+                <stop offset="100%" stop-color="#fde68a"/>
+              </radialGradient>
+              <filter id="glow-pink">
+                <feGaussianBlur stdDeviation="5" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="glow-yellow">
+                <feGaussianBlur stdDeviation="4" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+
+            <!-- background ellipse (brain silhouette) -->
+            <ellipse cx="280" cy="240" rx="230" ry="200" fill="url(#bg-grad)" stroke="#f3d0e7" stroke-width="1.5" opacity="0.7"/>
+            <ellipse cx="280" cy="260" rx="200" ry="175" fill="none" stroke="#fbcfe8" stroke-width="0.8" stroke-dasharray="3 6" opacity="0.5"/>
+
+            <!-- Connection lines drawn by JS -->
+            <g id="connections"></g>
+
+            <!-- Region nodes drawn by JS -->
+            <g id="regions-group"></g>
+          </svg>
+        </div>
+        <div id="brain-hint" style="position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:0.75rem;color:#b08090;pointer-events:none;">
+          Click any region to explore its activity
+        </div>
+      </div>
+
+      <!-- Detail panel -->
+      <div id="detail-panel">
+        <div class="dp-header" id="dp-header">
+          <h2>Brain Map</h2>
+          <div class="dp-func">Select a brain region to see its live activity, signals, and connections.</div>
+        </div>
+        <div class="dp-body" id="dp-body">
+          <div class="empty-state">
+            <div class="big-icon">🧠</div>
+            <div>Click any glowing region on the brain map to inspect its current state.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content-area -->
+
+    <!-- Bottom bar -->
+    <div id="bottom-bar">
+      <div id="chat-section">
+        <div class="bs-header"><span class="bs-dot"></span> Chat — Unified Identity</div>
+        <div id="chat-log"></div>
+        <div id="chat-input-row">
+          <input id="chat-input" type="text" placeholder="Say something to Dellin…" onkeydown="if(event.key==='Enter')sendMsg()"/>
+          <button id="send-btn" onclick="sendMsg()">Send</button>
+        </div>
+      </div>
+      <div id="reflection-section">
+        <div class="bs-header">🔮 Last Reflection</div>
+        <div id="reflection-log" style="color:var(--text2);font-style:italic;font-size:0.76rem;line-height:1.5;">
+          Awaiting first interaction…
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+
+</div><!-- /app -->
+
 <script>
-let brain={};
-async function refresh(){
-  brain = await (await fetch('/api/brain')).json();
-  const st = await (await fetch('/api/state')).json();
-  state.textContent = JSON.stringify(st,null,2);
-  regions.innerHTML='';
-  Object.entries(brain).forEach(([k,v])=>{
-    const d=document.createElement('div'); d.className='region'; d.textContent=`${k}\nactivity:${v}`;
-    d.onclick=()=>regionDetail.textContent=JSON.stringify({region:k,activity:v,body:st.body,last_reflection:st.last_reflection},null,2);
-    regions.appendChild(d);
+// ─────────────────────────────────────────
+// Brain region layout: [id, cx, cy, colorSet]
+// colorSet: 'pink' | 'yellow' | 'mixed'
+// ─────────────────────────────────────────
+const REGION_LAYOUT = [
+  // Top row — frontal/parietal
+  { id: 'prefrontal_cortex',        cx: 160, cy: 100, color: '#f472b6', ring: '#fce7f3' },
+  { id: 'anterior_cingulate_cortex',cx: 260, cy: 80,  color: '#fb923c', ring: '#ffedd5' },
+  { id: 'temporal_lobe',            cx: 370, cy: 100, color: '#a78bfa', ring: '#ede9fe' },
+
+  // Middle row — core limbic
+  { id: 'thalamus',                 cx: 260, cy: 195, color: '#fbbf24', ring: '#fef9c3' },
+  { id: 'amygdala',                 cx: 140, cy: 220, color: '#f43f5e', ring: '#ffe4e6' },
+  { id: 'hippocampus',              cx: 390, cy: 220, color: '#06b6d4', ring: '#cffafe' },
+  { id: 'insula',                   cx: 480, cy: 175, color: '#8b5cf6', ring: '#f5f3ff' },
+
+  // Lower-mid row
+  { id: 'basal_ganglia',            cx: 180, cy: 310, color: '#10b981', ring: '#d1fae5' },
+  { id: 'hypothalamus',             cx: 260, cy: 305, color: '#f97316', ring: '#ffedd5' },
+  { id: 'heart_loop',               cx: 90,  cy: 340, color: '#ec4899', ring: '#fce7f3' },
+
+  // Bottom row — posterior
+  { id: 'cerebellum',               cx: 400, cy: 360, color: '#3b82f6', ring: '#dbeafe' },
+  { id: 'brainstem',                cx: 260, cy: 405, color: '#6366f1', ring: '#e0e7ff' },
+];
+
+// Connection pairs
+const CONNECTIONS = [
+  ['prefrontal_cortex','anterior_cingulate_cortex'],
+  ['prefrontal_cortex','thalamus'],
+  ['prefrontal_cortex','hippocampus'],
+  ['anterior_cingulate_cortex','amygdala'],
+  ['anterior_cingulate_cortex','thalamus'],
+  ['amygdala','hippocampus'],
+  ['amygdala','hypothalamus'],
+  ['amygdala','insula'],
+  ['hippocampus','temporal_lobe'],
+  ['thalamus','basal_ganglia'],
+  ['thalamus','insula'],
+  ['thalamus','brainstem'],
+  ['basal_ganglia','hypothalamus'],
+  ['basal_ganglia','brainstem'],
+  ['hypothalamus','brainstem'],
+  ['hypothalamus','heart_loop'],
+  ['heart_loop','amygdala'],
+  ['heart_loop','insula'],
+  ['cerebellum','brainstem'],
+  ['cerebellum','thalamus'],
+  ['temporal_lobe','thalamus'],
+];
+
+// Build lookup
+const layoutMap = {};
+REGION_LAYOUT.forEach(r => layoutMap[r.id] = r);
+
+// ─────────────────────────────────────────
+// State
+// ─────────────────────────────────────────
+let brainData = {};
+let selectedRegion = null;
+let appState = {};
+
+// ─────────────────────────────────────────
+// Build SVG
+// ─────────────────────────────────────────
+function buildSVG() {
+  const connG = document.getElementById('connections');
+  const regG  = document.getElementById('regions-group');
+
+  // Draw connection lines
+  connG.innerHTML = '';
+  CONNECTIONS.forEach(([a, b]) => {
+    const la = layoutMap[a], lb = layoutMap[b];
+    if (!la || !lb) return;
+    const line = document.createElementNS('http://www.w3.org/2000/svg','path');
+    // Curved path
+    const mx = (la.cx + lb.cx) / 2;
+    const my = (la.cy + lb.cy) / 2 - 18;
+    line.setAttribute('d', `M${la.cx},${la.cy} Q${mx},${my} ${lb.cx},${lb.cy}`);
+    line.setAttribute('class', 'conn-line');
+    line.setAttribute('data-a', a);
+    line.setAttribute('data-b', b);
+    line.setAttribute('id', `conn-${a}-${b}`);
+    connG.appendChild(line);
+  });
+
+  // Draw region nodes
+  regG.innerHTML = '';
+  REGION_LAYOUT.forEach(r => {
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.setAttribute('class', 'region-node');
+    g.setAttribute('id', `node-${r.id}`);
+    g.setAttribute('transform', `translate(${r.cx},${r.cy})`);
+
+    // pulse ring
+    const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    ring.setAttribute('class', 'pulse-ring');
+    ring.setAttribute('cx', 0); ring.setAttribute('cy', 0);
+    ring.setAttribute('r', 28);
+    ring.style.stroke = r.color;
+    ring.style.strokeWidth = '2';
+    g.appendChild(ring);
+
+    // background circle
+    const bg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    bg.setAttribute('class', 'bg');
+    bg.setAttribute('cx', 0); bg.setAttribute('cy', 0);
+    bg.setAttribute('r', 30);
+    bg.style.fill = r.ring;
+    bg.style.stroke = r.color;
+    bg.style.strokeWidth = '1.8';
+    g.appendChild(bg);
+
+    // activity fill circle
+    const fill = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    fill.setAttribute('class', 'act-fill');
+    fill.setAttribute('cx', 0); fill.setAttribute('cy', 0);
+    fill.setAttribute('r', 22);
+    fill.style.fill = r.color;
+    fill.style.opacity = '0.18';
+    g.appendChild(fill);
+
+    // label
+    const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    lbl.setAttribute('class', 'label');
+    lbl.setAttribute('x', 0); lbl.setAttribute('y', 6);
+    const shortName = r.id.replace(/_/g,' ').split(' ').map(w=>w[0].toUpperCase()+w.slice(1)).join('\n');
+    // 2-line label
+    const words = lbl.textContent = ''; // clear
+    const parts = r.id.replace(/_/g,' ').split(' ');
+    if (parts.length >= 2) {
+      const t1 = document.createElementNS('http://www.w3.org/2000/svg','tspan');
+      t1.setAttribute('x',0); t1.setAttribute('dy','-5');
+      t1.textContent = parts.slice(0, Math.ceil(parts.length/2)).map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');
+      lbl.appendChild(t1);
+      const t2 = document.createElementNS('http://www.w3.org/2000/svg','tspan');
+      t2.setAttribute('x',0); t2.setAttribute('dy','11');
+      t2.textContent = parts.slice(Math.ceil(parts.length/2)).map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');
+      lbl.appendChild(t2);
+    } else {
+      lbl.textContent = parts[0][0].toUpperCase()+parts[0].slice(1);
+    }
+    g.appendChild(lbl);
+
+    // activity text
+    const actTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    actTxt.setAttribute('class', 'activity');
+    actTxt.setAttribute('x', 0); actTxt.setAttribute('y', 22);
+    actTxt.setAttribute('id', `act-txt-${r.id}`);
+    actTxt.textContent = '—';
+    g.appendChild(actTxt);
+
+    // click
+    g.addEventListener('click', () => selectRegion(r.id));
+
+    regG.appendChild(g);
   });
 }
-async function sendMsg(){
-  const message=msg.value.trim(); if(!message) return;
-  chat.innerHTML += `<div><b>you:</b> ${message}</div>`;
-  const r = await fetch('/api/message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message})});
-  const data = await r.json();
-  chat.innerHTML += `<div><b>dellin:</b> ${data.reply}</div>`;
-  chat.scrollTop = chat.scrollHeight;
-  msg.value='';
-  refresh();
+
+// ─────────────────────────────────────────
+// Update brain display
+// ─────────────────────────────────────────
+function updateBrain(data) {
+  brainData = data;
+  let activeCount = 0;
+
+  REGION_LAYOUT.forEach(r => {
+    const d = data[r.id];
+    if (!d) return;
+    const node = document.getElementById(`node-${r.id}`);
+    if (!node) return;
+
+    const act = d.activity;
+    if (act > 0.65) activeCount++;
+
+    // update fill opacity
+    const fill = node.querySelector('.act-fill');
+    if (fill) fill.style.opacity = (act * 0.55 + 0.08).toFixed(2);
+
+    // pulse ring for high activity
+    const bg = node.querySelector('.bg');
+    if (bg) {
+      bg.style.strokeWidth = act > 0.7 ? '2.5' : '1.8';
+      bg.style.filter = act > 0.7 ? `drop-shadow(0 0 ${Math.round(act*10)}px ${r.color})` : '';
+    }
+
+    const ring = node.querySelector('.pulse-ring');
+    if (ring) {
+      if (act > 0.65) {
+        ring.style.stroke = r.color;
+        ring.style.strokeWidth = '2';
+        ring.style.animation = `pulse-ring ${1.5 + (1-act)}s ease-out infinite`;
+        ring.style.opacity = '0.6';
+      } else {
+        ring.style.animation = 'none';
+        ring.style.opacity = '0';
+      }
+    }
+
+    // activity text
+    const txt = document.getElementById(`act-txt-${r.id}`);
+    if (txt) txt.textContent = Math.round(act * 100) + '%';
+
+    // highlight selected
+    if (selectedRegion === r.id) {
+      node.classList.add('selected');
+    } else {
+      node.classList.remove('selected');
+    }
+  });
+
+  document.getElementById('top-active-regions').textContent = activeCount;
+
+  // update connection highlights
+  CONNECTIONS.forEach(([a, b]) => {
+    const da = data[a], db = data[b];
+    const line = document.getElementById(`conn-${a}-${b}`);
+    if (!line) return;
+    if (da && db) {
+      const avg = (da.activity + db.activity) / 2;
+      line.style.opacity = (0.1 + avg * 0.5).toFixed(2);
+      line.style.strokeWidth = avg > 0.6 ? '2' : '1.5';
+      line.style.stroke = avg > 0.65 ? '#fbbf24' : '#f472b6';
+      line.style.strokeDasharray = avg > 0.65 ? '0' : '4 4';
+    }
+    // highlight connections for selected region
+    if (selectedRegion && (a === selectedRegion || b === selectedRegion)) {
+      line.style.opacity = '0.85';
+      line.style.strokeWidth = '2.5';
+      line.style.stroke = '#fbbf24';
+    }
+  });
+
+  if (selectedRegion) updateDetailPanel(selectedRegion);
 }
-setInterval(refresh,3000); refresh();
+
+// ─────────────────────────────────────────
+// Select region
+// ─────────────────────────────────────────
+function selectRegion(id) {
+  selectedRegion = id;
+  // hide hint
+  const hint = document.getElementById('brain-hint');
+  if (hint) hint.style.opacity = '0';
+  updateDetailPanel(id);
+
+  // update node highlights
+  REGION_LAYOUT.forEach(r => {
+    const node = document.getElementById(`node-${r.id}`);
+    if (!node) return;
+    if (r.id === id) node.classList.add('selected');
+    else node.classList.remove('selected');
+  });
+}
+
+function updateDetailPanel(id) {
+  const d = brainData[id];
+  const layout = layoutMap[id];
+  if (!d || !layout) return;
+
+  const header = document.getElementById('dp-header');
+  const body = document.getElementById('dp-body');
+
+  header.innerHTML = `
+    <h2 style="color:${layout.color}">${d.label}</h2>
+    <div class="dp-func">${d.function}</div>
+  `;
+
+  const pct = Math.round(d.activity * 100);
+  const circumference = 2 * Math.PI * 26;
+  const dash = ((pct / 100) * circumference).toFixed(1);
+
+  // Compute signals based on region + state
+  const signals = getRegionSignals(id, d, appState);
+
+  const connHtml = (d.connections || []).map(cid => {
+    const cl = layoutMap[cid];
+    const cd = brainData[cid];
+    const clr = cl ? cl.color : '#aaa';
+    const actPct = cd ? Math.round(cd.activity * 100) : '—';
+    const lbl = cd ? cd.label : cid.replace(/_/g,' ');
+    return `<div class="conn-item" onclick="selectRegion('${cid}')">
+      <div class="conn-dot" style="background:${clr}"></div>
+      <span style="flex:1">${lbl}</span>
+      <span style="font-size:0.72rem;color:var(--text2)">${actPct}%</span>
+    </div>`;
+  }).join('');
+
+  const signalsHtml = signals.map(s => `
+    <div class="signal-row">
+      <span style="color:var(--text2)">${s.name}</span>
+      <div class="signal-bar-wrap"><div class="signal-bar" style="width:${Math.round(s.val*100)}%"></div></div>
+      <span style="font-size:0.7rem;color:var(--text2);width:28px;text-align:right">${Math.round(s.val*100)}%</span>
+    </div>
+  `).join('');
+
+  body.innerHTML = `
+    <div class="dp-section">
+      <div class="activity-ring-wrap">
+        <div class="activity-ring">
+          <svg viewBox="0 0 64 64">
+            <circle cx="32" cy="32" r="26" fill="none" stroke="${layout.ring}" stroke-width="6"/>
+            <circle cx="32" cy="32" r="26" fill="none" stroke="${layout.color}" stroke-width="6"
+              stroke-dasharray="${dash} ${circumference}"
+              stroke-linecap="round"
+              transform="rotate(-90 32 32)"
+              style="transition:stroke-dasharray 0.8s ease"/>
+          </svg>
+          <div class="val">${pct}%</div>
+        </div>
+        <div class="activity-info">
+          <div><span class="activity-status ${d.status}">${d.status.toUpperCase()}</span></div>
+          <div style="font-size:0.72rem;color:var(--text2);margin-top:4px">Activity Level</div>
+          <div><span class="neuro-chip">🧪 ${d.neurotransmitter}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dp-section">
+      <div class="dp-section-title">Live Signals</div>
+      <div class="signal-list">${signalsHtml}</div>
+    </div>
+
+    <div class="dp-section">
+      <div class="dp-section-title">Connected Regions</div>
+      <div class="conn-list">${connHtml || '<div style="font-size:0.78rem;color:var(--text2)">No connections mapped</div>'}</div>
+    </div>
+  `;
+}
+
+function getRegionSignals(id, d, st) {
+  const b = (st && st.body) || {};
+  const base = d.activity;
+  const signals = [];
+
+  switch(id) {
+    case 'prefrontal_cortex':
+      signals.push({name:'Planning',val:base*0.9},{name:'Decision Confidence',val:(st.curiosity||0.5)*0.8},{name:'Self-Control',val:1-(b.stress||0.3)},{name:'Goal Focus',val:st.unresolved_goal_pressure||0.3});
+      break;
+    case 'amygdala':
+      signals.push({name:'Threat Detection',val:(b.stress||0.3)},{name:'Emotional Intensity',val:base},{name:'Attachment Pressure',val:st.attachment||0.4},{name:'Fear/Alert',val:(b.tension||0.3)*0.8});
+      break;
+    case 'hippocampus':
+      signals.push({name:'Memory Retrieval',val:base},{name:'New Memory Formation',val:(st.curiosity||0.5)*0.6},{name:'Emotional Memory',val:st.attachment||0.4},{name:'Memory Strength',val:0.55});
+      break;
+    case 'thalamus':
+      signals.push({name:'Attention Focus',val:base},{name:'Routing Efficiency',val:1-(st.uncertainty||0.4)},{name:'Competing Signals',val:(st.curiosity||0.5)*0.5},{name:'Priority Weight',val:base*0.85});
+      break;
+    case 'hypothalamus':
+      signals.push({name:'Energy Drive',val:1-(b.energy||0.7)},{name:'Stress Response',val:b.stress||0.3},{name:'Internal Pressure',val:(st.unresolved_goal_pressure||0.3)},{name:'Rest Need',val:1-(b.energy||0.7)*0.9});
+      break;
+    case 'brainstem':
+      signals.push({name:'Arousal Level',val:b.energy||0.7},{name:'Wake State',val:base},{name:'Internal Clock',val:0.8},{name:'Baseline Activity',val:0.55});
+      break;
+    case 'cerebellum':
+      signals.push({name:'Error Detection',val:(st.uncertainty||0.4)*0.7},{name:'Correction Signal',val:base*0.6},{name:'Prediction Accuracy',val:1-(st.uncertainty||0.4)},{name:'Timing',val:0.7});
+      break;
+    case 'insula':
+      signals.push({name:'Self-Feeling',val:b.warmth||0.6},{name:'Discomfort Signal',val:b.tension||0.3},{name:'Interoception',val:base},{name:'Uncertainty Sense',val:st.uncertainty||0.4});
+      break;
+    case 'heart_loop':
+      signals.push({name:'Warmth',val:b.warmth||0.6},{name:'Attachment',val:st.attachment||0.4},{name:'Stress Feedback',val:b.stress||0.3},{name:'Relational State',val:0.6});
+      break;
+    case 'basal_ganglia':
+      signals.push({name:'Habit Activation',val:base*0.7},{name:'Routine Pattern',val:0.55},{name:'Reward Signal',val:(st.curiosity||0.5)*0.6},{name:'Action Selection',val:base});
+      break;
+    case 'anterior_cingulate_cortex':
+      signals.push({name:'Conflict Detection',val:(st.uncertainty||0.4)*0.8},{name:'Empathy Signal',val:st.attachment||0.4},{name:'Motivation',val:base},{name:'Error Monitoring',val:base*0.7});
+      break;
+    case 'temporal_lobe':
+      signals.push({name:'Language Formation',val:base},{name:'Tone Selection',val:b.warmth||0.6},{name:'Communication Mode',val:1-(b.stress||0.3)*0.5},{name:'Word Retrieval',val:base*0.85});
+      break;
+    default:
+      signals.push({name:'Activity',val:base},{name:'Baseline',val:0.5});
+  }
+  return signals;
+}
+
+// ─────────────────────────────────────────
+// State update
+// ─────────────────────────────────────────
+function updateStateDisplay(st) {
+  appState = st;
+  const b = st.body || {};
+  const pct = v => Math.round((v||0)*100) + '%';
+
+  document.getElementById('sm-energy').style.width = pct(b.energy);
+  document.getElementById('sm-curiosity').style.width = pct(st.curiosity);
+  document.getElementById('sm-warmth').style.width = pct(b.warmth);
+  document.getElementById('sm-stress').style.width = pct(b.stress);
+  document.getElementById('sm-uncertainty').style.width = pct(st.uncertainty);
+  document.getElementById('sm-attachment').style.width = pct(st.attachment);
+
+  document.getElementById('top-energy-bar').style.width = pct(b.energy);
+
+  const urge = (
+    (st.attachment||0.4)*0.3
+    + (st.unresolved_goal_pressure||0.3)*0.25
+    + (st.curiosity||0.6)*0.2
+    - (st.inhibition||0.3)*0.2
+    - (st.uncertainty||0.4)*0.15
+  );
+  document.getElementById('top-speak-urge').textContent = urge.toFixed(2);
+
+  const mode = st.mode || 'awake';
+  document.getElementById('top-mode').textContent = mode.toUpperCase();
+  document.getElementById('top-mode').className = `mode-badge ${mode}`;
+}
+
+// ─────────────────────────────────────────
+// Chat
+// ─────────────────────────────────────────
+function appendMsg(sender, text) {
+  const log = document.getElementById('chat-log');
+  const wrap = document.createElement('div');
+  wrap.className = `chat-msg ${sender}`;
+  wrap.innerHTML = `<div class="chat-sender">${sender === 'user' ? 'You' : 'Dellin'}</div><div class="chat-bubble">${text}</div>`;
+  log.appendChild(wrap);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function sendMsg() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  appendMsg('user', msg);
+
+  try {
+    const res = await fetch('/api/message', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({message: msg})
+    });
+    const data = await res.json();
+    appendMsg('dellin', data.reply);
+    if (data.reflection) {
+      document.getElementById('reflection-log').textContent = data.reflection;
+    }
+    if (data.state) updateStateDisplay(data.state);
+  } catch(e) {
+    appendMsg('dellin', '[ connection error ]');
+  }
+}
+
+// ─────────────────────────────────────────
+// View switching (placeholder)
+// ─────────────────────────────────────────
+function setView(v) {
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    if (b.getAttribute('onclick') === `setView('${v}')`) b.classList.add('active');
+    else if (b.getAttribute('onclick') && b.getAttribute('onclick').startsWith('setView')) b.classList.remove('active');
+  });
+  // For now only brain map view is implemented
+}
+
+// ─────────────────────────────────────────
+// Clock
+// ─────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  document.getElementById('time-display').textContent = now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+// ─────────────────────────────────────────
+// Polling
+// ─────────────────────────────────────────
+async function poll() {
+  try {
+    const [brainRes, stateRes] = await Promise.all([
+      fetch('/api/brain'),
+      fetch('/api/state')
+    ]);
+    const brain = await brainRes.json();
+    const state = await stateRes.json();
+    updateBrain(brain);
+    updateStateDisplay(state);
+  } catch(e) {}
+}
+
+// ─────────────────────────────────────────
+// Init
+// ─────────────────────────────────────────
+buildSVG();
+poll();
+setInterval(poll, 2500);
+setInterval(updateClock, 1000);
+updateClock();
+
+// Initial chat message from Dellin
+setTimeout(() => {
+  appendMsg('dellin', "I am here. Not waiting for you — just existing. What's on your mind?");
+}, 800);
 </script>
-</body></html>
+</body>
+</html>
