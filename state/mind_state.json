@@ -7,14 +7,15 @@
   "inhibition": 0.3,
   "unresolved_goal_pressure": 0.3,
   "body": {
-    "energy": 0.66430621259981,
+    "energy": 0.61930621259981,
     "tension": 0.3,
     "facial_expression": "calm",
     "gaze": "steady",
     "posture": "relaxed",
     "restlessness": 0.2,
     "warmth": 0.6,
-    "stress": 0.25661709191082355
+    "stress": 0.22837191794498846
   },
-  "last_reflection": "What did I do? respond. Why? sufficient compliance and social readiness. Did this change me? Slightly. What should I remember? User preference + active context. Relationship change: stable."
+  "last_reflection": "Action: silence. Speak_urge: 0.2. Energy: 0.63. Uncertainty: 0.4. What changed: slight adjustment to memory and curiosity.",
+  "timestamp": 1778602643.4183776
 }

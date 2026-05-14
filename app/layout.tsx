@@ -2,14 +2,14 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Dellin Brain Dashboard",
-  description: "Autonomous male mind control room"
+  title: "Dellin — Artificial Mind",
+  description: "Autonomous male mind — hidden multiplicity, visible unity."
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body style={{ margin: 0, padding: 0, height: "100vh", overflow: "hidden" }}>{children}</body>
     </html>
   );
 }

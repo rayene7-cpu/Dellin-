@@ -2,8 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-body { @apply bg-cream text-slate-800; }
-
-.card { @apply bg-white/90 border border-pink-200 rounded-2xl shadow-glow p-4; }
-
-.region-pill { @apply rounded-xl px-3 py-2 text-sm font-medium bg-gradient-to-r from-butter/70 to-pink-200/80 hover:scale-[1.01] transition; }
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #fdf8f4;
+}
